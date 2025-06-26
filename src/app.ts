@@ -10,14 +10,21 @@ import cors from "cors";
 
 
 app.use(cors({
-     origin: "http://localhost:5173", 
-     credentials: true, }));
+  origin: [
+    "http://localhost:5173", // for local dev
+    "https://nexa-ai-frontend-4o6cv8b3o-rishitas-projects.vercel.app" // for production
+  ],
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //remove it in production
 app.use(morgan("dev"));
-
+app.get("/", (req, res) => {
+  res.send("✅ Nexa AI Backend is running!");
+});
 app.use("/api/v1", appRouter);
 
 export default app;
