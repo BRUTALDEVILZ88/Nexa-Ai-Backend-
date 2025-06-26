@@ -4,6 +4,8 @@ import { hash, compare } from "bcrypt";
 import { createToken } from "../utils/token-manager.js";
 import { COOKIE_NAME } from "../utils/constants.js";
 
+const isProd = process.env.NODE_ENV === "production";
+
 export const getAllUsers = async (
   req: Request,
   res: Response,
@@ -14,7 +16,7 @@ export const getAllUsers = async (
     return res.status(200).json({ message: "OK", users });
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
@@ -36,8 +38,8 @@ export const userSignup = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: "lax" as const,
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -48,15 +50,15 @@ export const userSignup = async (
       path: "/",
       httpOnly: true,
       signed: true,
-      sameSite: "lax" as const,
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
       expires,
     });
 
     return res.status(201).json({ message: "OK", name: user.name, email: user.email });
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
@@ -77,8 +79,8 @@ export const userLogin = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: "lax" as const,
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -89,15 +91,15 @@ export const userLogin = async (
       path: "/",
       httpOnly: true,
       signed: true,
-      sameSite: "lax" as const,
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
       expires,
     });
 
     return res.status(200).json({ message: "OK", name: user.name, email: user.email });
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
@@ -117,7 +119,7 @@ export const verifyUser = async (
     return res.status(200).json({ message: "OK", name: user.name, email: user.email });
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
@@ -138,13 +140,13 @@ export const userLogout = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: "lax" as const,
-      secure: false,
+      sameSite: isProd ? "none" : "lax",
+      secure: isProd,
     });
 
     return res.status(200).json({ message: "OK", name: user.name, email: user.email });
   } catch (error) {
     console.log(error);
-    return res.status(200).json({ message: "ERROR", cause: error.message });
+    return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
