@@ -6,26 +6,21 @@ import { config } from "dotenv";
 config();
 
 const app = express();
+const allowedOrigins = [
+  "https://nexa-ai-frontend-sigma.vercel.app",
+  "http://localhost:5173"
+];
 
-// ✅ Move CORS to the absolute top BEFORE anything else
 app.use(cors({
-  origin: [
-    "https://nexa-ai-frontend-sigma.vercel.app",
-    "http://localhost:5173",
-    "https://nexa-ai-frontend-4o6cv8b3o-rishitas-projects.vercel.app"
-  ],
+  origin: allowedOrigins,
   credentials: true,
 }));
 
-// ✅ Also handle preflight
 app.options("*", cors({
-  origin: [
-    "https://nexa-ai-frontend-sigma.vercel.app",
-    "http://localhost:5173",
-    "https://nexa-ai-frontend-4o6cv8b3o-rishitas-projects.vercel.app"
-  ],
+  origin: allowedOrigins,
   credentials: true,
 }));
+
 
 // Middleware
 app.use(express.json());
@@ -34,7 +29,7 @@ app.use(morgan("dev"));
 
 // Root check
 app.get("/", (req, res) => {
-  res.send("✅ Nexa AI Backend is running!");
+  res.send(" Nexa AI Backend is running!");
 });
 
 // Routes
