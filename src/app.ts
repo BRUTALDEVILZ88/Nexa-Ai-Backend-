@@ -11,6 +11,7 @@ import cors from "cors";
 
 app.use(cors({
   origin: [
+     "https://nexa-ai-frontend-sigma.vercel.app",
     "http://localhost:5173", // for local dev
     "https://nexa-ai-frontend-4o6cv8b3o-rishitas-projects.vercel.app" // for production
   ],
