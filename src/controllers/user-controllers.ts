@@ -34,6 +34,8 @@ export const userSignup = async (
     const user = new User({ name, email, password: hashedPassword });
     await user.save();
 
+console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
+
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       path: "/",
@@ -75,12 +77,14 @@ export const userLogin = async (
     const isPasswordCorrect = await compare(password, user.password);
     if (!isPasswordCorrect) return res.status(403).send("Incorrect Password");
 
+console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
+
     res.clearCookie(COOKIE_NAME, {
       httpOnly: true,
       path: "/",
       signed: true,
         sameSite: isProd ? "none" as "none" : "lax",
-  secure: isProd,
+       secure: isProd,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
