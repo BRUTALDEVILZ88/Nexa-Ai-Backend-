@@ -38,8 +38,8 @@ export const userSignup = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
+      sameSite: "none",
+      secure: true,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -50,8 +50,8 @@ export const userSignup = async (
       path: "/",
       httpOnly: true,
       signed: true,
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
+      sameSite: "lax",
+      secure: true,
       expires,
     });
 
@@ -79,8 +79,8 @@ export const userLogin = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
+      sameSite: "none",
+      secure: true,
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -91,8 +91,8 @@ export const userLogin = async (
       path: "/",
       httpOnly: true,
       signed: true,
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
+      sameSite: "none",
+      secure: true,
       expires,
     });
 
@@ -140,8 +140,8 @@ export const userLogout = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: isProd ? "none" : "lax",
-      secure: isProd,
+      sameSite: "none",
+      secure: true,
     });
 
     return res.status(200).json({ message: "OK", name: user.name, email: user.email });
