@@ -40,8 +40,9 @@ console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
       httpOnly: true,
       path: "/",
       signed: true,
-       sameSite: isProd ? "none" as "none" : "lax",
-  secure: isProd,
+     sameSite: "none" as "none",
+secure: true,
+
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -52,8 +53,8 @@ console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
       path: "/",
       httpOnly: true,
       signed: true,
-       sameSite: isProd ? "none" as "none" : "lax",
-  secure: isProd,
+      sameSite: "none" as "none",
+secure: true,
       expires,
     });
 
@@ -83,8 +84,9 @@ console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
       httpOnly: true,
       path: "/",
       signed: true,
-        sameSite: isProd ? "none" as "none" : "lax",
-       secure: isProd,
+       sameSite: "none" as "none",
+secure: true,
+
     });
 
     const token = createToken(user._id.toString(), user.email, "7d");
@@ -95,8 +97,9 @@ console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
       path: "/",
       httpOnly: true,
       signed: true,
-      sameSite: isProd ? "none" as "none" : "lax",
-  secure: isProd,
+      sameSite: "none" as "none",
+secure: true,
+
       expires,
     });
 
@@ -144,8 +147,10 @@ export const userLogout = async (
       httpOnly: true,
       path: "/",
       signed: true,
-      sameSite: isProd ? "none" as "none" : "lax",
-  secure: isProd,
+      sameSite: "none" as "none",
+secure: true,
+
+  
     });
 
     return res.status(200).json({ message: "OK", name: user.name, email: user.email });
