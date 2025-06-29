@@ -7,7 +7,7 @@ config();
 
 const app = express();
 const allowedOrigins = [
-  "https://nexa-ai-frontend-six.vercel.app",
+  "https://nexa-ai-frontend-six.vercel.app/",
   "http://localhost:5173"
 ];
 
@@ -38,3 +38,4 @@ import appRouter from "./routes/index.js";
 app.use("/api/v1", appRouter);
 
 export default app;
+ 
