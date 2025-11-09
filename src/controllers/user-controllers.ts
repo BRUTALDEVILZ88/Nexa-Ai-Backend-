@@ -60,6 +60,8 @@ export const userSignup = async (
     console.log(error);
     return res.status(500).json({ message: "ERROR", cause: error.message });
   }
+
+  
 };
 
 export const userLogin = async (

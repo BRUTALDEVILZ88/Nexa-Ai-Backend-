@@ -9,6 +9,7 @@ export const createToken = (id: string, email: string, expiresIn: string) => {
   });
   return token;
 };
+
 export const verifyToken = async (
   req: Request,
   res: Response,

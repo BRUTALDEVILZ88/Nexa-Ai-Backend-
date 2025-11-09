@@ -1,16 +1,10 @@
-import { Request, Response, NextFunction } from "express";
 import User from "../models/User.js";
 import { genAI } from "../config/gemini.js";
 
-const userLastCallMap = new Map<string, number>();
+const userLastCallMap = new Map();
 
 // -------------------- Generate Chat Completion --------------------
-
-export const generateChatCompletion = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const generateChatCompletion = async (req, res, next) => {
   const { message } = req.body;
 
   if (!message || typeof message !== "string") {
@@ -33,7 +27,9 @@ export const generateChatCompletion = async (
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(401).json({ message: "User not registered OR Token malfunctioned" });
+      return res.status(401).json({
+        message: "User not registered OR Token malfunctioned",
+      });
     }
 
     // ✅ Convert existing chats to Gemini format
@@ -51,32 +47,27 @@ export const generateChatCompletion = async (
     // 💾 Save user message before Gemini reply
     user.chats.push({ content: message, role: "user" });
 
-    // 🔥 Gemini v2.0 API call
-    const result = await genAI.models.generateContent({
-      model: "models/gemini-1.5-flash",
-      contents: chatHistory,
-    });
-
-    const responseText = result.text || "No response from Gemini";
+    // 🔥 Gemini v2 API call (correct syntax)
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent({ contents: chatHistory });
+    const responseText = result.response.text() || "No response from Gemini";
 
     // 💾 Save Gemini reply
     user.chats.push({ content: responseText, role: "assistant" });
     await user.save();
 
     return res.status(200).json({ chats: user.chats });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Gemini API Error:", error);
-    return res.status(500).json({ message: "Something went wrong with Gemini API" });
+    return res.status(500).json({
+      message: "Something went wrong with Gemini API",
+      error: error.message,
+    });
   }
 };
 
 // -------------------- Send All Chats --------------------
-
-export const sendChatsToUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const sendChatsToUser = async (req, res, next) => {
   try {
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
@@ -84,19 +75,14 @@ export const sendChatsToUser = async (
     }
 
     return res.status(200).json({ message: "OK", chats: user.chats });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
 
 // -------------------- Delete All Chats --------------------
-
-export const deleteChats = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteChats = async (req, res, next) => {
   try {
     const user = await User.findById(res.locals.jwtData.id);
     if (!user) {
@@ -104,11 +90,10 @@ export const deleteChats = async (
     }
 
     user.chats.splice(0, user.chats.length);
-
-    await user.save();
+await user.save();
 
     return res.status(200).json({ message: "OK" });
-  } catch (error: any) {
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "ERROR", cause: error.message });
   }
