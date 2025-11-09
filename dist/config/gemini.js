@@ -1,7 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 dotenv.config();
-export const genAI = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-});
+export const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 //# sourceMappingURL=gemini.js.map

@@ -20,7 +20,9 @@ export const generateChatCompletion = async (req, res, next) => {
         userLastCallMap.set(userId, now);
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(401).json({ message: "User not registered OR Token malfunctioned" });
+            return res.status(401).json({
+                message: "User not registered OR Token malfunctioned",
+            });
         }
         // ✅ Convert existing chats to Gemini format
         const chatHistory = user.chats.map((chat) => ({
@@ -34,12 +36,10 @@ export const generateChatCompletion = async (req, res, next) => {
         });
         // 💾 Save user message before Gemini reply
         user.chats.push({ content: message, role: "user" });
-        // 🔥 Gemini v2.0 API call
-        const result = await genAI.models.generateContent({
-            model: "models/gemini-1.5-flash",
-            contents: chatHistory,
-        });
-        const responseText = result.text || "No response from Gemini";
+        // 🔥 Gemini v2 API call (correct syntax)
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const result = await model.generateContent({ contents: chatHistory });
+        const responseText = result.response.text() || "No response from Gemini";
         // 💾 Save Gemini reply
         user.chats.push({ content: responseText, role: "assistant" });
         await user.save();
@@ -47,7 +47,10 @@ export const generateChatCompletion = async (req, res, next) => {
     }
     catch (error) {
         console.error("Gemini API Error:", error);
-        return res.status(500).json({ message: "Something went wrong with Gemini API" });
+        return res.status(500).json({
+            message: "Something went wrong with Gemini API",
+            error: error.message,
+        });
     }
 };
 // -------------------- Send All Chats --------------------

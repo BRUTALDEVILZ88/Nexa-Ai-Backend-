@@ -89,7 +89,7 @@ export const deleteChats = async (req, res, next) => {
       return res.status(401).send("User not registered OR Token malfunctioned");
     }
 
-    user.chats.splice(0, user.chats.length);
+  user.chats.splice(0, user.chats.length);
 await user.save();
 
     return res.status(200).json({ message: "OK" });
