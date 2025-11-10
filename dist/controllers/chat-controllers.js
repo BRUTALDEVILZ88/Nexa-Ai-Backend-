@@ -37,7 +37,7 @@ export const generateChatCompletion = async (req, res, next) => {
         // 💾 Save user message before Gemini reply
         user.chats.push({ content: message, role: "user" });
         // 🔥 Gemini v2 API call (correct syntax)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite-001" });
         const result = await model.generateContent({ contents: chatHistory });
         const responseText = result.response.text() || "No response from Gemini";
         // 💾 Save Gemini reply

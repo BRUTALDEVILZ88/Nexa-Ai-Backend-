@@ -48,7 +48,7 @@ export const generateChatCompletion = async (req, res, next) => {
     user.chats.push({ content: message, role: "user" });
 
     // 🔥 Gemini v2 API call (correct syntax)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite-001" });
     const result = await model.generateContent({ contents: chatHistory });
     const responseText = result.response.text() || "No response from Gemini";
 
@@ -94,7 +94,7 @@ await user.save();
 
     return res.status(200).json({ message: "OK" });
   } catch (error) {
-    console.error(error);
+    console.error(error); 
     return res.status(500).json({ message: "ERROR", cause: error.message });
   }
 };
