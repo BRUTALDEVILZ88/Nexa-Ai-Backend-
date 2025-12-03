@@ -23,7 +23,7 @@ export const userSignup = async (req, res, next) => {
         const user = new User({ name, email, password: hashedPassword });
         await user.save();
         console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
-        // ❌ Removed res.clearCookie() – this caused expired Set-Cookie header
+        //  Removed res.clearCookie() – this caused expired Set-Cookie header
         const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);
@@ -56,7 +56,7 @@ export const userLogin = async (req, res, next) => {
         if (!isPasswordCorrect)
             return res.status(403).send("Incorrect Password");
         console.log("Setting cookie with SameSite =", isProd ? "none" : "lax");
-        // ❌ Removed res.clearCookie() here as well — was sending Expires=1970
+        //  Removed res.clearCookie() here as well — was sending Expires=1970
         const token = createToken(user._id.toString(), user.email, "7d");
         const expires = new Date();
         expires.setDate(expires.getDate() + 7);
@@ -110,7 +110,7 @@ export const userLogout = async (req, res, next) => {
         if (user._id.toString() !== res.locals.jwtData.id) {
             return res.status(401).send("Permissions didn't match");
         }
-        // ✅ KEEP clearCookie here — this is logout, so you want to expire it
+        //  KEEP clearCookie here — this is logout, so you want to expire it
         res.clearCookie(COOKIE_NAME, {
             httpOnly: true,
             path: "/",
