@@ -11,7 +11,7 @@ export const generateChatCompletion = async (req, res, next) => {
         const userId = res.locals.jwtData.id;
         const now = Date.now();
         const lastCall = userLastCallMap.get(userId);
-        // ✅ Rate limit (3 sec gap)
+        // Rate limit (3 sec gap)
         if (lastCall && now - lastCall < 3000) {
             return res.status(429).json({
                 message: "Too many requests. Please wait a few seconds before trying again.",
@@ -24,7 +24,7 @@ export const generateChatCompletion = async (req, res, next) => {
                 message: "User not registered OR Token malfunctioned",
             });
         }
-        // ✅ Convert existing chats to Gemini format
+        //  Convert existing chats to Gemini format
         const chatHistory = user.chats.map((chat) => ({
             role: chat.role,
             parts: [{ text: chat.content }],
@@ -34,13 +34,13 @@ export const generateChatCompletion = async (req, res, next) => {
             role: "user",
             parts: [{ text: message }],
         });
-        // 💾 Save user message before Gemini reply
+        //  Save user message before Gemini reply
         user.chats.push({ content: message, role: "user" });
-        // 🔥 Gemini v2 API call (correct syntax)
+        // Gemini v2 API call (correct syntax)
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite-001" });
         const result = await model.generateContent({ contents: chatHistory });
         const responseText = result.response.text() || "No response from Gemini";
-        // 💾 Save Gemini reply
+        //  Save Gemini reply
         user.chats.push({ content: responseText, role: "assistant" });
         await user.save();
         return res.status(200).json({ chats: user.chats });
@@ -53,7 +53,7 @@ export const generateChatCompletion = async (req, res, next) => {
         });
     }
 };
-// -------------------- Send All Chats --------------------
+//  Send All Chats 
 export const sendChatsToUser = async (req, res, next) => {
     try {
         const user = await User.findById(res.locals.jwtData.id);
@@ -67,7 +67,7 @@ export const sendChatsToUser = async (req, res, next) => {
         return res.status(500).json({ message: "ERROR", cause: error.message });
     }
 };
-// -------------------- Delete All Chats --------------------
+// ] Delete All Chats
 export const deleteChats = async (req, res, next) => {
     try {
         const user = await User.findById(res.locals.jwtData.id);
